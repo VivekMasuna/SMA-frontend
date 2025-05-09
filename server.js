@@ -1,5 +1,3 @@
-// frontend/frontend/server.js
-
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -13,6 +11,15 @@ const PORT = 8090;
 
 // Serve static files from dist
 const distPath = path.join(__dirname, 'dist');
+
+// Middleware to set proper MIME for .js files
+app.use((req, res, next) => {
+    if (req.url.endsWith('.js')) {
+        res.type('application/javascript');
+    }
+    next();
+});
+
 app.use(express.static(distPath));
 
 // For SPA: serve index.html on unmatched routes
