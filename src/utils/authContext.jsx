@@ -1,35 +1,42 @@
 import { createContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
+        const getUser = async () => {
+            try {
+                const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/login/success`, {
+                    withCredentials: true,
+                });
+                if (res.data?.user) {
+                    setUser(res.data.user);
+                }
+            } catch {
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        getUser();
     }, []);
 
-    const login = async (userData) => {
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
-    };
-
-    const logout = async () => {
-        setUser(null);
-        localStorage.removeItem('user');
-    };
+    const login = (userData) => setUser(userData);
+    const logout = () => setUser(null);
 
     return (
         <AuthContext.Provider value={{ user, login, logout }}>
-            {children}
+            {!loading && children}
         </AuthContext.Provider>
     );
 }
 
 AuthProvider.propTypes = {
-    children: PropTypes.node.isRequired, // React Node is required
+    children: PropTypes.node.isRequired,
 };

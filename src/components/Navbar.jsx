@@ -1,26 +1,26 @@
-import { useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sling as Hamburger } from "hamburger-react";
+import { AuthContext } from "../utils/authContext";
 import "./styles/Navbar.css";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [user, setUser] = useState(null);
+    const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
+    const handleLogout = async () => {
+        try {
+            await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, {
+                method: "GET",
+                credentials: "include",
+            });
+            logout(); // Clear from context
+            navigate("/login");
+            // window.location.reload();
+        } catch (err) {
+            console.error("Logout failed:", err.message || err);
         }
-    }, []);
-
-    const handleLogout = () => {
-        window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, "_self");
-        localStorage.removeItem("user");
-        setUser(null);
-        navigate("/login");
-        window.location.reload();
     };
 
     return (
@@ -42,7 +42,7 @@ const Navbar = () => {
                         {!user ? (
                             <li><a href="/login" className="btns">Login</a></li>
                         ) : (
-                            <li><a href="/" className="btns" onClick={handleLogout}>Logout</a></li>
+                            <li><a className="btns" onClick={handleLogout}>Logout</a></li>
                         )}
                     </ul>
                 </nav>
