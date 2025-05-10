@@ -8,22 +8,25 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const getUser = async () => {
-            try {
-                const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/login/success`, {
-                    withCredentials: true,
-                });
-                if (res.data?.user) {
-                    setUser(res.data.user);
-                }
-            } catch {
+    const getUser = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/login/success`, {
+                withCredentials: true,
+            });
+            if (res.data?.user) {
+                setUser(res.data.user);
+            } else {
                 setUser(null);
-            } finally {
-                setLoading(false);
             }
-        };
+        } catch (error) {
+            console.error('Error fetching auth user:', error);
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         getUser();
     }, []);
 
@@ -31,7 +34,7 @@ export function AuthProvider({ children }) {
     const logout = () => setUser(null);
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, loading }}>
             {!loading && children}
         </AuthContext.Provider>
     );
