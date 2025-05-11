@@ -3,11 +3,9 @@ body {
 }
 
 .vision-mission-container {
-    /* max-width: 1300px; */
     margin: auto;
     text-align: center;
     padding: 40px 30px;
-    margin-bottom: 2rem;
     background: linear-gradient(to bottom, #ffd5d4, #fff);
     margin-bottom: 0;
     padding-bottom: 60px;
