@@ -31,9 +31,12 @@ function Login() {
         setEmailError(emailPattern.test(value) ? '' : 'Invalid email format');
     };
 
+    const [loading, setLoading] = useState(false);
+
     const handleLogin = async (e) => {
         e.preventDefault();
         if (emailError || !email || !password) return;
+        setLoading(true);
         try {
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, { email, password }, { withCredentials: true });
             const userData = response.data.user;
@@ -43,6 +46,8 @@ function Login() {
             // window.location.reload();
         } catch (err) {
             alert(err.response?.data?.message || 'Login failed');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -102,8 +107,8 @@ function Login() {
                                 <a href="/forgot">Forgot Password?</a>
                             </div>
 
-                            <button type='submit' className={styles.btn} disabled={!!emailError || !email || !password}>
-                                Login
+                            <button type='submit' className={styles.btn} disabled={loading || !!emailError || !email || !password}>
+                                {loading ? 'Logging in...' : 'Login'}
                             </button>
                         </form>
 

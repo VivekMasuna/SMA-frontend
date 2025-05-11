@@ -18,6 +18,7 @@ function Signup() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
 
 	const [nameError, setNameError] = useState('');
@@ -46,11 +47,14 @@ function Signup() {
 		if (nameError || emailError || passwordError || !name || !email || !password) return;
 
 		try {
+			setLoading(true);
 			const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/signup`, { name, email, password });
 			alert(response.data.message);
 			navigate('/login');
 		} catch (err) {
 			alert(err.response?.data?.message || 'Registration failed');
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -118,8 +122,8 @@ function Signup() {
 								/>
 							</FormControl>
 							{passwordError && <p className={styles.error}>{passwordError}</p>}
-							<button type="submit" className={styles.btn} disabled={!!nameError || !!emailError || !!passwordError || !name || !email || !password}>
-								Sign Up
+							<button type="submit" className={styles.btn} disabled={loading || !!nameError || !!emailError || !!passwordError || !name || !email || !password}>
+								{loading ? "Signing Up..." : "Sign Up"}
 							</button>
 						</form>
 
