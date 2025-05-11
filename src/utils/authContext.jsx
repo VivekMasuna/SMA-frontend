@@ -13,6 +13,7 @@ export function AuthProvider({ children }) {
             const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/login/success`, {
                 withCredentials: true,
             });
+            console.log("Frontend res data is: ", res.data);
             if (res.data?.user) {
                 setUser(res.data.user);
             } else {

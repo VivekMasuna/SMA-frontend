@@ -40,7 +40,7 @@ function Login() {
             await login(userData);
             alert(response.data.message);
             navigate('/');
-            window.location.reload();
+            // window.location.reload();
         } catch (err) {
             alert(err.response?.data?.message || 'Login failed');
         }
