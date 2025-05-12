@@ -265,6 +265,8 @@ const Simulation3 = () => {
                 <div className="file-upload-section">
                     <p className="file-info-text">
                         <strong>Note:</strong> The uploaded CSV must contain a <code>&quot;text&quot;</code> column. A <code>&quot;label&quot;</code> column is optional. Column names are <strong>case-sensitive</strong>.
+                        <br />
+                        Large datasets may take time or don&apos;t show output due to technical limits. We&apos;re working on improving this soon.
                     </p>
                     <input type="file" accept=".csv" onChange={handleFileChange} className="file-input" />
                 </div>
